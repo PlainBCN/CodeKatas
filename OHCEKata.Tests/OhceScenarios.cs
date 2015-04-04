@@ -12,7 +12,7 @@ namespace OHCEKata.Tests
         [TestMethod]
         public void WhenOhceStartsAtNightItSaysGoodNightWithYourName()
         {
-            var now = DateTime.Now;
+            var now = DateTime.UtcNow;
             try
             {
                 var nightTime = new DateTime(2015, 4, 4, 0, 0, 0);
@@ -37,10 +37,10 @@ namespace OHCEKata.Tests
         [TestMethod]
         public void WhenOhceStartsInTheMorningItSaysGoodMorningWithYourName()
         {
-            var now = DateTime.Now;
+            var now = DateTime.UtcNow;
             try
             {
-                var morningTime = new DateTime(2015, 4, 4, 12, 0, 0);
+                var morningTime = new DateTime(2015, 4, 4, 11, 0, 0);
                 SetTime(morningTime);
 
                 using (StringWriter sw = new StringWriter())
