@@ -34,6 +34,31 @@ namespace OHCEKata.Tests
             }
         }
 
+        [TestMethod]
+        public void WhenOhceStartsInTheMorningItSaysGoodMorningWithYourName()
+        {
+            var now = DateTime.Now;
+            try
+            {
+                var morningTime = new DateTime(2015, 4, 4, 12, 0, 0);
+                SetTime(morningTime);
+
+                using (StringWriter sw = new StringWriter())
+                {
+                    Console.SetOut(sw);
+                    var name = "Pedro";
+                    Program.Main(new[] { name });
+
+                    string expected = $"Buenos dias {name}!";
+                    Assert.AreEqual<string>(expected, sw.ToString());
+                }
+            }
+            finally
+            {
+                SetTime(now);
+            }
+        }
+
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern bool SetSystemTime(ref SYSTEMTIME st);
 
