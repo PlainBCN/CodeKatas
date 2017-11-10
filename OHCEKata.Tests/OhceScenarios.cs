@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Runtime.InteropServices;
+using FluentAssertions.Formatting;
 
 namespace OHCEKata.Tests
 {
@@ -8,17 +10,57 @@ namespace OHCEKata.Tests
     public class OhceScenarios
     {
         [TestMethod]
-        public void GivenTimeAsNight_WhenOhceStart_ThenWeReceiveAGoodNight()
+        public void WhenOhceStartsAtNightItSaysGoodNightWithYourName()
         {
-            var name = "Pedro";
-            using (StringWriter sw = new StringWriter())
+            var now = DateTime.Now;
+            try
             {
-                Console.SetOut(sw);
-                Program.Main(new[] { name });
+                var nightTime = new DateTime(2015, 4, 4, 0, 0, 0);
+                SetTime(nightTime);
 
-                string expected = $"Buenas noches {name}!";
-                Assert.AreEqual<string>(expected, sw.ToString());
+                using (StringWriter sw = new StringWriter())
+                {
+                    Console.SetOut(sw);
+                    var name = "Pedro";
+                    Program.Main(new[] { name });
+
+                    string expected = $"Buenas noches {name}!";
+                    Assert.AreEqual<string>(expected, sw.ToString());
+                }
             }
+            finally
+            {
+                SetTime(now);
+            }
+        }
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern bool SetSystemTime(ref SYSTEMTIME st);
+
+        private void SetTime(DateTime time)
+        {
+            SYSTEMTIME st = new SYSTEMTIME();
+            st.wYear = (Int16)time.Year;
+            st.wMonth = (Int16)time.Month;
+            st.wDay = (Int16)time.Day;
+            st.wHour = (Int16)time.Hour;
+            st.wMinute = (Int16)time.Minute;
+            st.wSecond = (Int16)time.Second;
+
+            SetSystemTime(ref st);
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct SYSTEMTIME
+        {
+            public short wYear;
+            public short wMonth;
+            public short wDayOfWeek;
+            public short wDay;
+            public short wHour;
+            public short wMinute;
+            public short wSecond;
+            public short wMilliseconds;
         }
     }
 }
