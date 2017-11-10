@@ -10,7 +10,7 @@ namespace OHCEKata
     {
         public static void Main(string[] args)
         {
-            Console.Write("Conchita");
+            Console.Write("Buenas noches Pedro!");
         }
     }
 }
